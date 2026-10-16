@@ -269,7 +269,7 @@ echo "      • Espaço em cache: ${CACHE_SIZE:-0B}"
 
 echo ""
 echo "============================================================"
-echo "  TUDO PRONTO! Conexão mapeada em: $LLAMA_BASE_URL"
+echo "  TUDO PRONTO! Conexão com LLM mapeada em: $LLAMA_BASE_URL"
 echo "============================================================"
 echo ""
 
