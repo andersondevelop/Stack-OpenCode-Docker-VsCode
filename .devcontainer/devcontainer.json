@@ -1,0 +1,21 @@
+{
+  "name": "OpenCode Sandbox",
+  "dockerComposeFile": "../docker-compose.yaml",
+  "service": "opencode",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "opencode",
+  // A extensao "sst-dev.opencode" (era v1) nao funciona com a CLI v2: ela chama
+  // `opencode --port N`, flag que foi removida. A versao nova da Marketplace,
+  // "sst-dev.opencode-v2" (beta 0.1.1), ainda tem incompatibilidades conhecidas
+  // com a CLI 2.x (marcador de stdout do `opencode serve` e porta fixa 4096).
+  //
+  // Use o terminal integrado do VS Code:
+  //   opencode                    -> TUI (plugins oc-tps e opencode-mem carregam)
+  //   opencode serve --port 4096  -> web UI; o VS Code encaminha a porta e voce
+  //                                  abre http://127.0.0.1:4096 no navegador
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  }
+}

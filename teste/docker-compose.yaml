@@ -1,0 +1,46 @@
+services:
+  opencode:
+    platform: linux/amd64
+    # Imagem construída na raiz ./ (docker compose build) — aqui só consumimos.
+    image: <usuario>/<projeto>:latest
+    # Sem container_name: o Compose nomeia por projeto (<dir>-opencode-1),
+    # permitindo varios projetos/containers coexistirem sem conflito de nome.
+    stdin_open: true
+    tty: true
+    # O Docker Compose puxa automaticamente as variáveis do seu arquivo .env local
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - LLAMA_BASE_URL=${LLAMA_BASE_URL:-http://10.0.1.158:9090/v1}
+      - MODEL_PROVIDER=${MODEL_PROVIDER:-local}
+      - MODEL_ID=${MODEL_ID:-qwen}
+      - MODEL_NAME=${MODEL_NAME:-qwen}
+      - CONTEXT_LIMIT=${CONTEXT_LIMIT:-49152}
+      - OUTPUT_LIMIT=${OUTPUT_LIMIT:-8192}
+      - COMPACTION_AUTO=${COMPACTION_AUTO:-true}
+      - COMPACTION_KEEP_TOKENS=${COMPACTION_KEEP_TOKENS:-15000}
+      - COMPACTION_BUFFER=${COMPACTION_BUFFER:-20000}
+      - AUTO_CAPTURE_LANGUAGE=${AUTO_CAPTURE_LANGUAGE:-pt}
+      - OPENCODE_MEM_WEB_PASSWORD=${OPENCODE_MEM_WEB_PASSWORD:-}
+      - OPENCODE_MEM_WEB_TOKEN=${OPENCODE_MEM_WEB_TOKEN:-}
+      - CHOWN_WORKSPACE=${CHOWN_WORKSPACE:-auto}
+    ports:
+      # Web UI do opencode-mem. Porta do HOST configuravel para permitir varios
+      # projetos rodando juntos (defina OPENCODE_MEM_WEB_PORT no .env de cada um).
+      - "${OPENCODE_MEM_WEB_PORT:-4747}:4747"
+    volumes:
+      # Mapeia a raiz do seu projeto atual para dentro da Jail (permite ler o .opencode/ local do projeto)
+      - .:/workspace
+      # HOME do container (config, cache, memória e .vscode-server) fica fora do projeto
+      - opencode_home:/home/opencode
+    working_dir: /workspace
+    healthcheck:
+      test: ["CMD-SHELL", "command -v opencode >/dev/null 2>&1 && command -v git >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  opencode_home:
+
